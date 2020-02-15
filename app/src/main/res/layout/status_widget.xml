@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:id="@+id/status_online"
+        android:layout_height="match_parent"
+        android:src="@drawable/bytewerk_online">
+    </ImageView>
+    <ImageView
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/status_offline"
+        android:src="@drawable/bytewerk_offline">
+    </ImageView>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bytewerk_nointernet"
+        android:visibility="invisible"
+        android:id="@+id/status_nointernet"></ImageView>
+</RelativeLayout>
