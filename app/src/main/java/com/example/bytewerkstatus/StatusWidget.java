@@ -1,8 +1,13 @@
 package com.example.bytewerkstatus;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.ImageButton;
 import android.widget.RemoteViews;
 
 
@@ -20,47 +25,45 @@ import com.android.volley.toolbox.Volley;
  */
 public class StatusWidget<appWidgetId> extends AppWidgetProvider {
 
+
     static void updateAppWidget(Context context, final AppWidgetManager appWidgetManager,
                                 final int appWidgetId) {
-        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.status_widget);
-// ...
+        //for (int i = 0;i < 6;i++) {
+            final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.status_widget);
 
 // Instantiate the RequestQueue.
-       RequestQueue queue = Volley.newRequestQueue(context);
-        String url ="http://stats.bytewerk.org/status.txt";
+            RequestQueue queue = Volley.newRequestQueue(context);
+            String url ="http://stats.bytewerk.org/status.txt";
 // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        if (response.equals("open")) {
-                            views.setViewVisibility(R.id.status_online, 1);
-                        } else {
-                            views.setViewVisibility(R.id.status_offline, 1);
+                    new Response.Listener<String>() {
+                        public void onResponse(String response) {
+
+                            if (response.equals("open")) {
+                                views.setImageViewResource(R.id.status_view, R.drawable.bytewerk_online);
+                            } else {
+                                views.setImageViewResource(R.id.status_view, R.drawable.bytewerk_offline);
+                            }
+                            appWidgetManager.updateAppWidget(appWidgetId, views);
+
                         }
-                        //views.setTextViewText(R.id.text, "Yeah!" + response);
-                        appWidgetManager.updateAppWidget(appWidgetId, views);
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    views.setImageViewResource(R.id.status_view, R.drawable.bytewerk_nointernet);
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
+                }
+            });
 
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                views.setViewVisibility(R.id.status_nointernet, 1);
-                appWidgetManager.updateAppWidget(appWidgetId, views);
-
-            }
-        });
-        queue.add(stringRequest);
-
+            queue.add(stringRequest);
 
     }
 
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(Context context, final AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-
+        for (final int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
@@ -68,6 +71,7 @@ public class StatusWidget<appWidgetId> extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
+
     }
 
     @Override
